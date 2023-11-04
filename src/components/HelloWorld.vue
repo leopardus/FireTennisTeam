@@ -5,6 +5,7 @@ import { getFirestore, onSnapshot, collectionGroup } from "firebase/firestore";
 
 import { query, where, collection, getDocs, getDoc, doc } from "firebase/firestore";
 
+
 interface TennisEvent {
   tennisField: String;
   tennisTrainer: String;
@@ -27,7 +28,7 @@ const register = () => {
     });
 };
 
-const getItems = async () => {
+const getItems = async (xx) => {
   const db = getFirestore();
 
   const docSnap = await getDoc(doc(db, "settings", "summer2020"));
@@ -66,7 +67,7 @@ const count = ref(0);
       <code>components/HelloWorld123.vue</code> to test HMR
     </p>
     <button @click="register">Register</button>
-    <button @click="getItems">GetItem</button>
+    <button @click="getItems(22)">GetItem</button>
   </div>
 </template>
 

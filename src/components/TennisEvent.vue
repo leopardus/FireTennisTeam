@@ -1,11 +1,24 @@
 <script setup lang="ts">
+
+interface TennisEvent {
+  tennisField: String;
+  tennisTrainer: String;
+  warm: String;
+  year: Number;
+}
+
 defineProps({
-  msg: String,
+  msg: {
+        type: Object as ()=> TennisEvent
+    },
 });
 
 const clickON = () => {
   console.log("123123");
+  
 };
+
+
 </script>
 
 <template>
@@ -13,7 +26,7 @@ const clickON = () => {
     <div class="container">
       <div class="left">
         <p><b>10:30 - 11:30</b></p>
-        <p>60 min</p>
+        <p>60 min {{ msg?.tennisTrainer }}</p>
         <p>Terenul 4</p>
       </div>
       
@@ -40,12 +53,14 @@ const clickON = () => {
   border-radius: 5px 5px 5px 5px;
   border: 1px solid #e9e9e9;
   display: flex;
+  
   justify-content: space-between;
   flex-direction: column;
 }
 
 .left {
   display: flex;
+  align-items: start;
   justify-content: space-between;
   flex-direction: column;
 }
@@ -72,6 +87,6 @@ p {
   margin-inline-end: 0px;
 }
 b {
-  font-weight: 700;
+  font-weight: 800;
 }
 </style>
