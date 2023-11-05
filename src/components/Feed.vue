@@ -31,7 +31,6 @@ const onSlideChange = () => {
 const onPrevSlideChange = () => {
   console.log("ON PREV SLICE");
   if (swiperRef?.activeIndex! === 0) {
-    
     const keyDate = slides[swiperRef?.activeIndex!].key;
     console.log("keyDate:" + keyDate);
 
@@ -50,24 +49,33 @@ const onNextSlideChange = () => {
     console.log("keyDate:" + keyDate);
 
     const nextDate = calendar.getDateAfterXNumberOfDays(1, calendar.getDateFromString(keyDate, "YYYY-MM-DD"));
-    slides.push({ key: nextDate });
+    //slides.push({ key: nextDate });
   }
 };
 
+const generateScrollDays = () => {
+  for (let index = -30; index <= 7; index++) {
+    console.log("index:" + index);
+    
+    const today = calendar.getDateAfterXNumberOfDays(index, new Date());
+    slides.push({ key: today });
+  }
 
-onMounted(()=>{
-  slideTo(2);
-})
+  console.log(slides);
+};
+
+const slides: ISliderItem[] = [];
+generateScrollDays();
+
+onMounted(() => {
+  slideTo(31);
+});
 
 //const slides = Array.from({ length: 10 }).map((_, index) => index + 1);
-const slides: ISliderItem[] = [
-  { key: "2023-10-31", index: 10 },
-  { key: "2023-12-01", index: 21 },
-  { key: "2023-11-02", index: 2 },
-  { key: "2023-11-03", index: 32 },
-];
+
 const slideTo = (index: number) => {
-  console.log("111");
+  console.log("slide to: " + index);
+  
   swiperRef?.slideTo(index - 1, 0);
 };
 const append = () => {
@@ -77,10 +85,11 @@ const append = () => {
 
 <template>
   <div class="toolbar">
-    <button @click="slideTo(1)" class="prepend-slide">Slide 1</button>
-    <button @click="slideTo(2)" class="slide-250">Slide 2</button>
-    <button @click="slideTo(10)" class="slide-500">Slide 10</button>
-    <button @click="append()" class="append-slides">Append Slide</button>
+    <v-btn :elevation="0" class="buttonNav" @click="slideTo(5)"> &lt;&lt; </v-btn>
+    <v-btn :elevation="0" class="buttonNav" @click="slideTo(30)"> Ieri </v-btn>
+    <v-btn :elevation="0" class="buttonNav" @click="slideTo(31)"> Azi </v-btn>
+    <v-btn :elevation="0" class="buttonNav" @click="slideTo(32)"> Maine </v-btn>
+    <v-btn :elevation="0" class="buttonNav" @click="slideTo(37)"> >> </v-btn>
   </div>
   <swiper
     class="swiper"
@@ -106,5 +115,11 @@ const append = () => {
 .swiper {
   width: 100%;
   height: 100%;
+}
+
+.buttonNav {
+  border: 1px solid black;
+  margin-left: 5px;
+  margin-top: 10px;
 }
 </style>

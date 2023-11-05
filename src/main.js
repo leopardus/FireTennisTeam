@@ -1,29 +1,31 @@
-import { createApp } from 'vue'
-import {createPinia } from 'pinia'
-import './style.css'
-import App from './App.vue'
-import { initializeApp } from "firebase/app";
-import { getAuth } from 'firebase/auth'
-import {router} from "./router/index"
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import "./style.css";
+import App from "./App.vue";
+import { router } from "./router/index";
+import { initializeFirebase } from "./firebaseConfig";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyD_fvoczUX9uBzR-0vHHeZzazPwzLEacbc",
-    authDomain: "fireone-d080e.firebaseapp.com",
-    databaseURL: "https://fireone-d080e.firebaseio.com",
-    projectId: "fireone-d080e",
-    storageBucket: "fireone-d080e.appspot.com",
-    messagingSenderId: "959104802859",
-    appId: "1:959104802859:web:5e4464e0c67dcb9e0e0a6e",
-    measurementId: "G-G7LQ4PCYYG"
-};
+import "vuetify/dist/vuetify.min.css";
+import { createVuetify } from "vuetify";
+import * as components from "vuetify/components";
+import * as directives from "vuetify/directives";
 
-initializeApp(firebaseConfig);
+import { OhVueIcon, addIcons } from "oh-vue-icons";
+import { BiCalendar2Week, PrUser, OiSquare, OiThreeBars } from "oh-vue-icons/icons";
+addIcons(BiCalendar2Week, PrUser, OiSquare, OiThreeBars);
+
+initializeFirebase();
+
+const app = createApp(App);
+app.component("v-icon", OhVueIcon);
 
 const pinia = createPinia();
-const app = createApp(App);
+const vuetify = createVuetify({
+  components,
+  directives,
+});
+app.use(vuetify);
 
 app.use(router);
 app.use(pinia);
-app.mount('#app');
-
-
+app.mount("#app");

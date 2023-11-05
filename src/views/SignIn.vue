@@ -22,14 +22,14 @@ const signIn = () => {
 <template>
   <h1>FireTennis Team</h1>
   <br/>
-  <p><input type="text" placeholder="Email" v-model="email" /></p>
-  <p><input type="password" placeholder="Password" v-model="password" /></p>
+  <p><input class="input" type="text" placeholder="Email" v-model="email" /></p>
+  <p><input class="input" type="password" placeholder="Password" v-model="password" /></p>
   <p><button class="button" @click="signIn">Login</button></p>
 </template>
 
 
 <style scoped>
-input {
+.input {
     font-size: 15px;
     width: 80%;
     max-width: 256px;

@@ -9,13 +9,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/vue-fontawesome": "^3.0.3",
     "dayjs": "^1.11.10",
     "firebase": "^10.5.2",
+    "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^2.1.6",
     "swiper": "^11.0.3",
     "vue": "^3.3.4",
+    "vue-material-design-icons": "^5.2.0",
     "vue-router": "^4.2.5",
-    "vuefire": "^3.1.17"
+    "vuefire": "^3.1.17",
+    "vuetify": "^3.3.23"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
