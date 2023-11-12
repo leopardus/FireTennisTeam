@@ -2,15 +2,20 @@
 import { ref } from "vue";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "vue-router"; // import router
+import { useCounterStore } from "../app/store";
+
 const email = ref("");
 const password = ref("");
 const router = useRouter(); // get a reference to our vue router
+
 const signIn = () => {
   // we also renamed this method
   const auth = getAuth();
   signInWithEmailAndPassword(auth, email.value, password.value) // THIS LINE CHANGED
     .then((data) => {
       console.log("Successfully logged in!");
+      const store = useCounterStore();
+      store.userLogged();
       router.push("/feed"); // redirect to the feed
     })
     .catch((error) => {
@@ -37,6 +42,8 @@ const signIn = () => {
     padding: 3px 3px 3px 3px;
     background-color: #ffffff !important;
     border: 1px solid #e9e9e9;
+    box-sizing: content-box;
+    margin-bottom: 10px;
 }
 
 .button {

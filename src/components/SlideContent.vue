@@ -1,30 +1,22 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import TennisEventComp from "./TennisEvent.vue";
-import { TennisEvent, useTennisEvents } from "./firebase";
+import { useTennisEvents } from "./firebase";
 
-import {calendar} from "./SmartCallendar"
+import { calendar } from "./SmartCallendar";
+import { TennisEventModel } from "../models/model";
 
 const props = defineProps({
   date: String,
 });
 
-const items = ref<TennisEvent[]>([]);
-
-
+const items = ref<TennisEventModel[]>([]);
 
 onMounted(async () => {
   try {
-
     const dateIeri = calendar.getDateAfterXNumberOfDays(-1);
-    
-    console.log("data ieri:" + dateIeri);
-    
-    
-    console.log("Loading from date: " + props.date);
+
     const response = await useTennisEvents(props.date);
     items.value = response.events;
-    console.log("Finish");
   } catch (error) {
     console.error(error.message);
   }
@@ -40,19 +32,24 @@ const push = () => {
 </script>
 
 <template>
-  <div class="main" style="height: 100px; padding-top: 50px">
-    <div class="header">
+  <div class="main" style="height: 100px; padding-top: 20px">
+    <div
+      class="header"
+      style="background-color: #ffffff; padding: 9px 9px 9px 9px; border-radius: 5px 5px 5px 5px; border: 1px solid #464646; max-width: 400px; width: 90%"
+    >
       <div>Antrenamente FireTennis</div>
-      <div>Dani Mitranca</div>
-      {{ date }}
+      <!-- <div><h2>Dani Mitranca</h2></div> -->
+      <div>
+        <h5>{{ date }}</h5>
+      </div>
     </div>
   </div>
-  <div v-for="item in items">
-    <!-- <div v-if="item.tennisTrainer.includes('DaniM')" class="main"> -->
+
+  <div v-for="item in items" :key="item.guid">
+    <!-- <div v-for="item in items"> -->
     <div class="main">
-      <TennisEventComp :msg="item" />
+      <tennis-event-comp :msg="item" />
     </div>
-    <!-- </div> -->
   </div>
 
   <div v-if="items.length === 0" class="main">

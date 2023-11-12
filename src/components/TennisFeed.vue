@@ -10,7 +10,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/virtual";
 import type SwiperClass from "swiper";
-import SlideContentVue from "./SlideContent.vue";
+
 import { calendar } from "./SmartCallendar";
 
 interface ISliderItem {
@@ -20,7 +20,7 @@ interface ISliderItem {
 
 let modules = [Pagination, Navigation, Virtual];
 let swiperRef: SwiperClass | null = null;
-const onSwiper = (swiper) => {
+const onSwiper = (swiper: any) => {
   console.log(swiper);
   swiperRef = swiper;
 };
@@ -29,10 +29,8 @@ const onSlideChange = () => {
 };
 
 const onPrevSlideChange = () => {
-  console.log("ON PREV SLICE");
   if (swiperRef?.activeIndex! === 0) {
     const keyDate = slides[swiperRef?.activeIndex!].key;
-    console.log("keyDate:" + keyDate);
 
     const prevDate = calendar.getDateAfterXNumberOfDays(-1, calendar.getDateFromString(keyDate, "YYYY-MM-DD"));
     console.log("lungimeX" + slides.length);
@@ -43,11 +41,8 @@ const onPrevSlideChange = () => {
 };
 
 const onNextSlideChange = () => {
-  console.log("ON NEXT SLICE");
   if (slides.length === swiperRef?.activeIndex! + 1) {
     const keyDate = slides[swiperRef?.activeIndex!].key;
-    console.log("keyDate:" + keyDate);
-
     const nextDate = calendar.getDateAfterXNumberOfDays(1, calendar.getDateFromString(keyDate, "YYYY-MM-DD"));
     //slides.push({ key: nextDate });
   }
@@ -55,8 +50,6 @@ const onNextSlideChange = () => {
 
 const generateScrollDays = () => {
   for (let index = -30; index <= 7; index++) {
-    console.log("index:" + index);
-    
     const today = calendar.getDateAfterXNumberOfDays(index, new Date());
     slides.push({ key: today });
   }
@@ -75,21 +68,45 @@ onMounted(() => {
 
 const slideTo = (index: number) => {
   console.log("slide to: " + index);
-  
-  swiperRef?.slideTo(index - 1, 0);
+
+  swiperRef?.slideTo(index - 1, 300);
+};
+
+const slideToPrev = () => {
+  const prev = swiperRef?.activeIndex! - 1;
+  console.log("slide to prev: " + prev);
+
+  swiperRef?.slideTo(prev, 300);
+};
+const slideToNext = () => {
+  const next = swiperRef?.activeIndex! + 1;
+  console.log("slide to prev: " + next);
+
+  swiperRef?.slideTo(next, 300);
 };
 const append = () => {
   //slides.push(slides.length);
 };
+
+const items = ["foo", "bar", "fizz", "buzz"];
+const values = ["foo", "bar", "fizz", "buzz"];
+
+const selectedItems = ref([]);
+
+const options = ref([
+  { label: "Option 1", value: "option1" },
+  { label: "Option 2", value: "option2" },
+  { label: "Option 3", value: "option3" },
+]);
 </script>
 
 <template>
   <div class="toolbar">
-    <v-btn :elevation="0" class="buttonNav" @click="slideTo(5)"> &lt;&lt; </v-btn>
-    <v-btn :elevation="0" class="buttonNav" @click="slideTo(30)"> Ieri </v-btn>
-    <v-btn :elevation="0" class="buttonNav" @click="slideTo(31)"> Azi </v-btn>
+    <v-btn :elevation="0" class="buttonNav" @click="slideToPrev()"> &lt;&lt; </v-btn>
+    <v-btn :elevation="0" class="buttonNav" @click="slideTo(30)">Ieri </v-btn>
+    <v-btn :elevation="0" class="buttonNav" @click="slideTo(31)"><div style="width: 20px !important">Azi</div></v-btn>
     <v-btn :elevation="0" class="buttonNav" @click="slideTo(32)"> Maine </v-btn>
-    <v-btn :elevation="0" class="buttonNav" @click="slideTo(37)"> >> </v-btn>
+    <v-btn :elevation="0" class="buttonNav" @click="slideToNext()"> >> </v-btn>
   </div>
   <swiper
     class="swiper"
@@ -100,7 +117,6 @@ const append = () => {
     @slideChange="onSlideChange"
     @slide-prev-transition-start="onPrevSlideChange"
     @slide-next-transition-start="onNextSlideChange"
-    @real-index-change=""
     :virtual="true"
     :navigation="false"
     :pagination="{ type: 'fraction' }"
@@ -121,5 +137,10 @@ const append = () => {
   border: 1px solid black;
   margin-left: 5px;
   margin-top: 10px;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 </style>

@@ -2,14 +2,23 @@
 import { ref, watchEffect } from "vue"; // used for conditional rendering
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "vue-router";
+import { useCounterStore } from "./app/store";
+
 const router = useRouter();
+
+const store = useCounterStore();
+
 const isLoggedIn = ref(true);
 // runs after firebase is initialized
 const auth = getAuth();
 auth.onAuthStateChanged(function (user) {
   if (user) {
+    console.log("user loggedin");
+    store.userLogged();
     isLoggedIn.value = true; // if we have a user
   } else {
+    console.log("user loggedoff");
+    store.userLoggedOff();
     isLoggedIn.value = false; // if we do not
   }
 });
@@ -20,12 +29,17 @@ const signOut = () => {
 
 const drawer = ref(false);
 const menuItems = [
-  { text: "Acasă", icon: "mdi-home" },
-  { text: "Produse", icon: "mdi-package-variant" },
-  { text: "Servicii", icon: "mdi-cog-outline" },
-  { text: "Despre Noi", icon: "mdi-information" },
-  { text: "Contact", icon: "mdi-email" },
+  { text: "Acasă", icon: "mdi-home" , link:"/feed"},
+  { text: "Produse", icon: "mdi-package-variant", link:"/new" },
+  { text: "Servicii", icon: "mdi-cog-outline" , link:"/new"},
+  { text: "Despre Noi", icon: "mdi-information" , link:"/new"},
+  { text: "Contact", icon: "mdi-email" , link:"/new"},
 ];
+
+const navigateTo = (route) =>{
+      router.push(route);
+      //this.drawer = false; // Închide drawer-ul după selectarea unui link
+    }
 </script>
 
 <template>
@@ -44,12 +58,14 @@ const menuItems = [
     <v-navigation-drawer app v-model="drawer" color="black">
       <v-list>
         <div style="height: 100px"></div>
-        <v-list-item v-for="(item, index) in menuItems" :key="index" link class="custom-list-item1">
+        <v-list-item v-for="(item, index) in menuItems" :key="index" link class="custom-list-item1" @click="navigateTo(item.link)">
           <v-list-item-content class="custom-list-item-content">
             <v-list-item-icon style="padding-right: 10px">
               <v-icon name="oi-square" />
             </v-list-item-icon>
-            <v-list-item-title class="custom-text">{{ item.text }}</v-list-item-title>
+            <v-list-item-content>
+            <v-list-item-title>{{ item.text }}</v-list-item-title>
+          </v-list-item-content>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -59,9 +75,9 @@ const menuItems = [
       <v-btn icon>
         <v-icon name="oi-three-bars" @click="drawer = !drawer" style="font-size: 20px" />
       </v-btn>
-      <v-app-bar-title class="d-flex self-start"> FIRE TENNIS TEAM </v-app-bar-title>
+      <v-app-bar-title class="d-flex self-start"> FIRE Tennis Team</v-app-bar-title>
 
-      <v-spacer></v-spacer>
+      <!-- <v-spacer style="width: 2px;"></v-spacer> -->
       <v-btn icon>
         <v-icon name="bi-calendar2-week" class="icon2" fill="white" scale="1" />
       </v-btn>

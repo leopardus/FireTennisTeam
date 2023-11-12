@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface TennisEvent {
   tennisField: String;
   tennisTrainer: String;
@@ -7,43 +6,60 @@ interface TennisEvent {
   year: Number;
 }
 
-defineProps({
+const props = defineProps({
   msg: {
-        type: Object as ()=> TennisEvent
-    },
+    type: Object, //as ()=> TennisEvent
+  },
 });
+
+console.log("123123");
+const players = JSON.parse(props.msg?.players);
+const numeList = players.map(item => item.name);
+const jucatori = numeList.join(', ');
 
 const clickON = () => {
   console.log("123123");
-  
 };
 
-
+const paddingTime = (input: any) => {
+  return (input + "").padStart(2, "0");
+};
 </script>
 
 <template>
   <div class="card">
     <div class="container">
       <div class="left">
-        <p><b>10:30 - 11:30</b></p>
-        <p>60 min {{ msg?.tennisTrainer }}</p>
-        <p>Terenul 4</p>
-      </div>
-      
-      <div class="right">
-        <p><b>Players</b></p>
-        <p>Ducu, Amalia ,Maria</p>
-        <div style="height: 5px;"></div>
+        <p>
+          <b
+            >{{ paddingTime(msg?.startHour.hour) }}:{{ paddingTime(msg?.startHour.minutes) }} - {{ paddingTime(msg?.endHour.hour) }}:{{
+              paddingTime(msg?.endHour.minutes)
+            }}</b
+          >
+        </p>
+        <p><b>Antrenori:</b> {{ msg?.tennisTrainer }}</p>
+        <!-- <p><b>Terenul:</b> {{ msg?.tennisField }}</p> -->
+        <p style="text-align: start;"><b>Players: </b>{{jucatori}}</p>
+
         <p><b>Conditii</b></p>
-        <p>Aero liber, cu lumina, fara caldura </p>
+        <p>[in work] Aero liber, cu lumina, fara caldura</p>
+
       </div>
+
+      <!-- <div class="right">
+        <p><b>Players</b></p>
+        <p>{{jucatori}}</p>
+        <div style="height: 5px"></div>
+        <p><b>Conditii</b></p>
+        <p>Aero liber, cu lumina, fara caldura</p>
+      </div> -->
     </div>
   </div>
 </template>
 
 <style scoped>
 .card {
-  height: 100px;
+  /* height: 100px; */
   width: 90%;
   max-width: 400px;
   padding: 8px 8px 1px 12px;
@@ -51,9 +67,9 @@ const clickON = () => {
   margin-bottom: 20px;
   background-color: #fdfdfd;
   border-radius: 5px 5px 5px 5px;
-  border: 1px solid #e9e9e9;
+  border: 1px solid #464646;
   display: flex;
-  
+
   justify-content: space-between;
   flex-direction: column;
 }
