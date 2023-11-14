@@ -1,10 +1,4 @@
 <script setup lang="ts">
-interface TennisEvent {
-  tennisField: String;
-  tennisTrainer: String;
-  warm: String;
-  year: Number;
-}
 
 const props = defineProps({
   msg: {

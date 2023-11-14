@@ -26,9 +26,6 @@ watch(items, (newItems) => {
   console.log("Items have changed:", newItems);
 });
 
-const push = () => {
-  console.log("push");
-};
 </script>
 
 <template>
@@ -47,9 +44,7 @@ const push = () => {
       </div>
     </div>
   </div>
-
-  <!-- <div v-for="item in items" :key="item.guid"> -->
-  <div v-for="item in items" >
+  <div v-for="item in items" :key="item.guid">
     <!-- <div v-for="item in items"> -->
     <div class="main">
       <tennis-event-comp :msg="item" />

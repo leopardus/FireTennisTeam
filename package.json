@@ -28,8 +28,13 @@
     "vuetify": "^3.3.23"
   },
   "devDependencies": {
+    "@babel/core": "^7.23.3",
+    "@babel/eslint-parser": "^7.23.3",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@vitejs/plugin-vue": "^4.2.3",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^8.53.0",
+    "eslint-plugin-vue": "^9.18.1",
     "typescript": "^5.2.2",
     "vite": "^4.4.5"
   }

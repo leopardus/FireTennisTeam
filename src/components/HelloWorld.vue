@@ -5,14 +5,6 @@ import { getFirestore, onSnapshot, collectionGroup } from "firebase/firestore";
 
 import { query, where, collection, getDocs, getDoc, doc } from "firebase/firestore";
 
-
-interface TennisEvent {
-  tennisField: String;
-  tennisTrainer: String;
-  warm: String;
-  year: Number;
-}
-
 const register = () => {
   const db = getFirestore();
 

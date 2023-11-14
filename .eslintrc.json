@@ -1,20 +1,44 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true
-    },
-    "extends": [
-        "plugin:vue/vue3-essential"
-    ],
-    "overrides": [
-    ],
-    "parserOptions": {
-        "ecmaVersion": "latest"
-    },
-    "plugins": [
-        "vue"
-    ],
-    "rules": {
-      "vue/require-v-for-key":"off"
-    }
+  "env": {
+    "browser": true,
+    "es2021": true
+    //"jest/globals": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:vue/vue3-essential"
+  ],
+  "overrides": [],
+  "parser": "vue-eslint-parser",
+  //"parser": "@typescript-eslint/parser",
+  //"parser": "@babel/eslint-parser",
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module",
+    "parser": "@typescript-eslint/parser" 
+  },
+  "plugins": [
+    "vue",
+    "@typescript-eslint"
+  ],
+  "ignorePatterns": ["*.css", "*.svg"],
+  "rules": {
+     "vue/require-v-for-key":"warn",
+    //  "@vue/require-v-for-key":"off",
+    "@typescript-eslint/no-unused-vars": "warn",
+    "@typescript-eslint/no-non-null-asserted-optional-chain":"off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "max-len": [
+      "error",
+      {
+        "code": 160,
+        "tabWidth": 4,
+        "ignoreComments": true,
+        "ignoreUrls": true,
+        "ignoreStrings": true,
+        "ignoreTemplateLiterals": true
+      }
+    ]
+  }
 }
