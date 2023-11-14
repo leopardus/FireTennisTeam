@@ -34,11 +34,6 @@ const vuetify = createVuetify({
 });
 
 app.component('VueDatePicker', VueDatePicker);
-import TennisEventComp from "./components/TennisEvent.vue";
-app.component('TennisEventComp', TennisEventComp);
-import SlideContentVue from "./components/SlideContent.vue";
-app.component('SlideContentVue', SlideContentVue);
-
 app.use(vuetify);
 app.use(pinia);
 app.use(router);

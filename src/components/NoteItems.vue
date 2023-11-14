@@ -1,12 +1,11 @@
 <script setup>
+import { useCounterStore } from "../app/store";
+import { ref } from "vue";
 
-import {useCounterStore} from '../app/store'
-import {ref} from 'vue';
-
-const emit = defineEmits(['changeNote', 'submit'])
+const emit = defineEmits(["changeNote", "submit"]);
 
 function buttonClick() {
-  emit('submit')
+  emit("submit");
 }
 
 const store = useCounterStore();
@@ -20,29 +19,26 @@ function getRandomColor() {
 }
 
 const addNote = () => {
-    emit('changeNote', 311);
-    store.hideModal();
+  emit("changeNote", 311);
+  store.hideModal();
 
-    notes.value.push({
-        text: newNote.value,
-        date: new Date(),
-        color: getRandomColor()
-    })
-
-    
-}
-
+  notes.value.push({
+    text: newNote.value,
+    date: new Date(),
+    color: getRandomColor(),
+  });
+};
 </script>
 
 <template>
   <main>
     <div v-if="store.showModal" class="overlay">
-        <div class="modal">
-            <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
-            <button @click="addNote">Add Note</button>
-            <button @click="$emit('changeNote', 1)">Change Note</button>
-            <button @click="store.hideModal">Close</button>
-        </div>
+      <div class="modal">
+        <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
+        <button @click="addNote">Add Note</button>
+        <button @click="$emit('changeNote', 1)">Change Note</button>
+        <button @click="store.hideModal">Close</button>
+      </div>
     </div>
     <div class="container">
       <header>
@@ -50,7 +46,7 @@ const addNote = () => {
         <button @click="store.viewModal">+</button>
       </header>
       <div class="cards-container">
-        <div v-for="note in notes" :key="note" class="card" :style="{backgroundColor : note.color }">
+        <div v-for="note in notes" :key="note" class="card" :style="{ backgroundColor: note.color }">
           <p class="main-text">{{ note.text }}</p>
           <p class="date">../../....</p>
         </div>
@@ -104,42 +100,40 @@ header button {
   margin: 20px;
 }
 
-.cards-container{
-    display: flex;
-    flex-wrap: wrap;
-
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.overlay{
-    position:absolute;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(8, 8, 8, 0.90);
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(8, 8, 8, 0.9);
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.modal{
-    width: 750px;
-    background-color: white;
-    border-radius: 10px;
-    padding: 30px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
+.modal {
+  width: 750px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
-.modal button{
-    padding: 10px 20px;
-    font-size: 20px;
-    width: 100%;
-    background-color: blueviolet;
-    color: aliceblue;
-    border: none;
-    cursor: pointer;
-    margin-top: 15px;
+.modal button {
+  padding: 10px 20px;
+  font-size: 20px;
+  width: 100%;
+  background-color: blueviolet;
+  color: aliceblue;
+  border: none;
+  cursor: pointer;
+  margin-top: 15px;
 }
-
 </style>

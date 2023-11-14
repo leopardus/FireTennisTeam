@@ -8,7 +8,7 @@ const props = defineProps({
 
 console.log("123123");
 const players = JSON.parse(props.msg?.players);
-const numeList = players.map((item) => item.name);
+const numeList = players.map((item:any) => item.name);
 const jucatori = numeList.join(", ");
 
 const clickON = () => {
@@ -19,13 +19,13 @@ const paddingTime = (input: any) => {
   return (input + "").padStart(2, "0");
 };
 
-const clickaction = (arg) => {
+const clickaction = (arg:any) => {
   console.log("click");
 
   console.log(arg);
 };
 
-const stop = (arg) => {
+const stop = (arg:any) => {
   console.log("stop");
   console.log(a1);
 };

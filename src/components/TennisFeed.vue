@@ -10,6 +10,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import "swiper/css/virtual";
 import type SwiperClass from "swiper";
+import SlideContent from "./SlideContent.vue";
 
 import { calendar } from "./SmartCalendar";
 
@@ -122,7 +123,7 @@ const options = ref([
     :pagination="{ type: 'fraction' }"
   >
     <swiper-slide v-for="(slideContent, index) in slides" :key="index" :virtual-index="index" class="slide">
-      <SlideContentVue :date="slideContent.key"></SlideContentVue>
+      <SlideContent :date="slideContent.key"/>
     </swiper-slide>
   </swiper>
 </template>

@@ -5,6 +5,8 @@ import { loadEvents } from "../database/loadEventsQuery";
 import { calendar } from "./SmartCalendar";
 import { TennisEventModel } from "../models/model";
 
+import TennisEvent from "./TennisEvent.vue";
+
 const props = defineProps({
   date: String,
 });
@@ -17,7 +19,7 @@ onMounted(async () => {
 
     const response = await loadEvents(props.date);
     items.value = response.events;
-  } catch (error) {
+  } catch (error: any) {
     console.error(error.message);
   }
 });
@@ -25,7 +27,6 @@ onMounted(async () => {
 watch(items, (newItems) => {
   console.log("Items have changed:", newItems);
 });
-
 </script>
 
 <template>
@@ -34,7 +35,7 @@ watch(items, (newItems) => {
       class="header"
       style="background-color: #ffffff; padding: 9px 9px 9px 9px; border-radius: 5px 5px 5px 5px; border: 1px solid #464646; max-width: 400px; width: 90%"
     >
-      <div>Antrenamente Dani {{  }}</div>
+      <div>Antrenamente Dani {{}}</div>
       <!-- <div><h2>Dani Mitranca</h2></div> -->
       <div>
         <h5>Data: {{ date }}</h5>
@@ -47,7 +48,7 @@ watch(items, (newItems) => {
   <div v-for="item in items" :key="item.guid">
     <!-- <div v-for="item in items"> -->
     <div class="main">
-      <tennis-event-comp :msg="item" />
+      <TennisEvent :msg="item" />
     </div>
   </div>
 
