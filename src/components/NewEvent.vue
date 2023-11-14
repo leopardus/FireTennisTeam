@@ -2,9 +2,11 @@
 import { onMounted, ref, watch } from "vue";
 // Import Swiper Vue.js components
 import dayjs, { Dayjs } from "dayjs";
-import { createEvent } from "./addEventCommand";
+import { createEvent } from "../database/addEventCommand";
 import { loadPlayers } from "../database/loadPlayersQuery";
 import { DateTimeField, Player, TennisEventModel } from "../models/model";
+import { useRouter } from "vue-router";
+const router = useRouter();
 
 let options = ref<Player[]>();
 
@@ -28,6 +30,10 @@ const loadTennisPlayers = async () => {
 };
 
 const AddTennisEvent = async () => {
+  if (selectedItems.value.length === 0) {
+    snackbar.value = true;
+    return;
+  }
   getSelectedPlayers();
   const timePicker = time.value as TimePickerModel;
   0;
@@ -50,6 +56,8 @@ const AddTennisEvent = async () => {
   };
 
   await createEvent(newEvent);
+
+  router.push("/");
 };
 
 const getSelectedPlayers = () => {
@@ -90,7 +98,7 @@ onMounted(async () => {
 
 //model
 const selectedDate2 = ref("");
-const time = ref();
+const time = ref<TimePickerModel>({ hours: new Date().getHours(), minutes: 0, seconds: 0 });
 const durata = ref("60");
 const field = ref("1");
 const conditii = ref("aer liber");
@@ -126,9 +134,20 @@ const disabledTimes = [
   { hours: 18, minutes: 43 },
   { hours: 18, minutes: 44 },
 ];
+
+const snackbar = ref(false);
 </script>
 
 <template>
+  <v-snackbar v-model="snackbar" color="red" vertical>
+    <div class="text-subtitle-1 pb-2">Alege jucatori</div>
+
+    <p>Pentru a putea adauga un antrenament trebuie selectat cel putin un jucator.</p>
+
+    <template v-slot:actions>
+      <v-btn variant="outline" @click="snackbar = false"> Close </v-btn>
+    </template>
+  </v-snackbar>
   <v-container>
     <v-row><div style="height: 12px"></div></v-row>
     <v-row>

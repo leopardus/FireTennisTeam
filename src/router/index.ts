@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import SignIn from "../views/SignIn.vue";
 import TennisFeed from "../components/TennisFeed.vue";
 import NewEvent from "../components/NewEvent.vue";
+import InProgress from "../components/InProgress.vue";
 import { getAuth } from "firebase/auth";
 import { useCounterStore } from "../app/store";
 
@@ -13,6 +14,7 @@ export const router = createRouter({
     { path: "/", component: TennisFeed },
     { path: "/signin", component: SignIn },
     { path: "/new", component: NewEvent },
+    { path: "/statistica", component: InProgress },
     // { path: "/register", component: Register },
     { path: "/feed", component: TennisFeed, meta: { requiresAuth: true } },
   ],

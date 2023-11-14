@@ -1,9 +1,8 @@
 <script setup>
 import { ref, watchEffect } from "vue"; // used for conditional rendering
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "vue-router";
 import { useCounterStore } from "./app/store";
-
+import { useRouter } from "vue-router";
 const router = useRouter();
 
 const store = useCounterStore();
@@ -29,11 +28,10 @@ const signOut = () => {
 
 const drawer = ref(false);
 const menuItems = [
-  { text: "Acasă", icon: "mdi-home" , link:"/feed"},
-  { text: "Produse", icon: "mdi-package-variant", link:"/new" },
-  { text: "Servicii", icon: "mdi-cog-outline" , link:"/new"},
-  { text: "Despre Noi", icon: "mdi-information" , link:"/new"},
-  { text: "Contact", icon: "mdi-email" , link:"/new"},
+  { text: "Antrenamente", icon: "mdi-home" , link:"/feed"},
+  { text: "Adaugare", icon: "mdi-package-variant", link:"/new" },
+  { text: "Statistica", icon: "mdi-email" , link:"/statistica"},
+  { text: "Logare", icon: "mdi-email" , link:"/signin"},
 ];
 
 const navigateTo = (route) =>{

@@ -14,8 +14,8 @@ const props = defineProps({
 
 console.log("123123");
 const players = JSON.parse(props.msg?.players);
-const numeList = players.map(item => item.name);
-const jucatori = numeList.join(', ');
+const numeList = players.map((item) => item.name);
+const jucatori = numeList.join(", ");
 
 const clickON = () => {
   console.log("123123");
@@ -24,6 +24,19 @@ const clickON = () => {
 const paddingTime = (input: any) => {
   return (input + "").padStart(2, "0");
 };
+
+const clickaction = (arg) => {
+  console.log("click");
+
+  console.log(arg);
+};
+
+const stop = (arg) => {
+  console.log("stop");
+  console.log(a1);
+};
+
+const a1 = props.msg?.guid;
 </script>
 
 <template>
@@ -39,22 +52,28 @@ const paddingTime = (input: any) => {
         </p>
         <p><b>Antrenori:</b> {{ msg?.tennisTrainer }}</p>
         <!-- <p><b>Terenul:</b> {{ msg?.tennisField }}</p> -->
-        <p style="text-align: start;"><b>Players: </b>{{jucatori}}</p>
+        <p style="text-align: start"><b>Players: </b>{{ jucatori }}</p>
 
         <p><b>Conditii</b></p>
         <p>[in work] Aero liber, cu lumina, fara caldura</p>
-
       </div>
 
-      <!-- <div class="right">
-        <p><b>Players</b></p>
-        <p>{{jucatori}}</p>
-        <div style="height: 5px"></div>
-        <p><b>Conditii</b></p>
-        <p>Aero liber, cu lumina, fara caldura</p>
-      </div> -->
+      <div class="right">
+        <v-menu>
+          <template v-slot:activator="{ props }">
+            <v-btn v-bind="props" color="darkolivegreen" icon="mdi-dots-horizontal" elevation="0"></v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item key="0">Inchide</v-list-item>
+            <v-list-item key="1">Modifica Antrenament (in work)</v-list-item>
+            <v-list-item key="2" style="background-color: red; color: azure;"  @click="stop">Sterge Antrenament</v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
     </div>
   </div>
+  <div class="text-center"></div>
 </template>
 
 <style scoped>

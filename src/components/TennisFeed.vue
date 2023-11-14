@@ -11,7 +11,7 @@ import "swiper/css/navigation";
 import "swiper/css/virtual";
 import type SwiperClass from "swiper";
 
-import { calendar } from "./SmartCallendar";
+import { calendar } from "./SmartCalendar";
 
 interface ISliderItem {
   key: string;
@@ -144,3 +144,4 @@ const options = ref([
   box-sizing: border-box;
 }
 </style>
+./SmartCalendar

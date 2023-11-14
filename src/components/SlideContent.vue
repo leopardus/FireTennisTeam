@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
-import { useTennisEvents } from "./firebase";
+import { loadEvents } from "../database/loadEventsQuery";
 
-import { calendar } from "./SmartCallendar";
+import { calendar } from "./SmartCalendar";
 import { TennisEventModel } from "../models/model";
 
 const props = defineProps({
@@ -15,7 +15,7 @@ onMounted(async () => {
   try {
     const dateIeri = calendar.getDateAfterXNumberOfDays(-1);
 
-    const response = await useTennisEvents(props.date);
+    const response = await loadEvents(props.date);
     items.value = response.events;
   } catch (error) {
     console.error(error.message);
@@ -37,15 +37,19 @@ const push = () => {
       class="header"
       style="background-color: #ffffff; padding: 9px 9px 9px 9px; border-radius: 5px 5px 5px 5px; border: 1px solid #464646; max-width: 400px; width: 90%"
     >
-      <div>Antrenamente FireTennis</div>
+      <div>Antrenamente Dani {{  }}</div>
       <!-- <div><h2>Dani Mitranca</h2></div> -->
       <div>
-        <h5>{{ date }}</h5>
+        <h5>Data: {{ date }}</h5>
+      </div>
+      <div>
+        <h5>Total : {{ items.length }}</h5>
       </div>
     </div>
   </div>
 
-  <div v-for="item in items" :key="item.guid">
+  <!-- <div v-for="item in items" :key="item.guid"> -->
+  <div v-for="item in items" >
     <!-- <div v-for="item in items"> -->
     <div class="main">
       <tennis-event-comp :msg="item" />
