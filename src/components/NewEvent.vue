@@ -81,7 +81,7 @@ const values = ["foo", "bar", "fizz", "buzz"];
 
 const selectedItems = ref([]);
 
-const level = (arg) => {
+const level = (arg:any) => {
   console.log(arg);
   return "red";
 };
@@ -112,9 +112,9 @@ const showCalendar = () => {
 const close = () => {
   isCalendarOpen.value = false;
   const dates = selectedDate.value;
-  console.log(dates[0]);
+  
 };
-const closeAndSet = (date) => {
+const closeAndSet = (date: any) => {
   const dateJS = dayjs(date).format("DD/MM/YYYY");
   console.log(dateJS);
   selectedDate2.value = dateJS;
@@ -139,15 +139,17 @@ const snackbar = ref(false);
 </script>
 
 <template>
+  <div>
   <v-snackbar v-model="snackbar" color="red" vertical>
     <div class="text-subtitle-1 pb-2">Alege jucatori</div>
 
     <p>Pentru a putea adauga un antrenament trebuie selectat cel putin un jucator.</p>
 
     <template v-slot:actions>
-      <v-btn variant="outline" @click="snackbar = false"> Close </v-btn>
+      <v-btn variant="outlined" @click="snackbar = false"> Close </v-btn>
     </template>
   </v-snackbar>
+</div>
   <v-container>
     <v-row><div style="height: 12px"></div></v-row>
     <v-row>

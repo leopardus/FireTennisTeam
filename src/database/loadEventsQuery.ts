@@ -1,7 +1,7 @@
 import { getFirestore, query, where, collection, getDocs, getDoc, doc } from "firebase/firestore";
 import { TennisEventModel } from "../models/model";
 
-export const loadEvents = async (arg) => {
+export const loadEvents = async (arg: any) => {
   const db = getFirestore();
   const events: TennisEventModel[] = [];
   const docSnap = await getDoc(doc(db, "settings", "summer2020"));

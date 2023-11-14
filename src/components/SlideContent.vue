@@ -13,7 +13,7 @@ const props = defineProps({
 
 const items = ref<TennisEventModel[]>([]);
 
-onMounted(async () => {
+const loadEventsInner = async () => {
   try {
     const dateIeri = calendar.getDateAfterXNumberOfDays(-1);
 
@@ -22,11 +22,18 @@ onMounted(async () => {
   } catch (error: any) {
     console.error(error.message);
   }
+};
+onMounted(async () => {
+  await loadEventsInner();
 });
 
 watch(items, (newItems) => {
   console.log("Items have changed:", newItems);
 });
+
+const handleItemUpdated = async(updatedItem:any) => {
+  await loadEventsInner();
+};
 </script>
 
 <template>
@@ -48,7 +55,7 @@ watch(items, (newItems) => {
   <div v-for="item in items" :key="item.guid">
     <!-- <div v-for="item in items"> -->
     <div class="main">
-      <TennisEvent :msg="item" />
+      <TennisEvent :msg="item" @item-updated="handleItemUpdated" />
     </div>
   </div>
 

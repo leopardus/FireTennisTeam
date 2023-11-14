@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { deleteEvent } from "../database/deleteEventCommand";
+import { TennisEventModel } from "../models/model";
+
+const emit = defineEmits(['item-updated'])
 
 const props = defineProps({
   msg: {
@@ -25,9 +29,12 @@ const clickaction = (arg:any) => {
   console.log(arg);
 };
 
-const stop = (arg:any) => {
-  console.log("stop");
-  console.log(a1);
+const deleteCurrentEvent = async(arg:any) => {
+  console.log("delete: " + props.msg?.guid);
+  const tennisEvent = props.msg as TennisEventModel;
+  await deleteEvent(tennisEvent);
+
+  emit('item-updated', tennisEvent);
 };
 
 const a1 = props.msg?.guid;
@@ -61,7 +68,7 @@ const a1 = props.msg?.guid;
           <v-list>
             <v-list-item key="0">Inchide</v-list-item>
             <v-list-item key="1">Modifica Antrenament (in work)</v-list-item>
-            <v-list-item key="2" style="background-color: red; color: azure;"  @click="stop">Sterge Antrenament</v-list-item>
+            <v-list-item key="2" style="background-color: red; color: azure;"  @click="deleteCurrentEvent">Sterge Antrenament</v-list-item>
           </v-list>
         </v-menu>
       </div>
@@ -119,3 +126,7 @@ b {
   font-weight: 800;
 }
 </style>
+
+function emit(arg0: string, tennisEvent: TennisEventModel) {
+  throw new Error("Function not implemented.");
+}
