@@ -6,9 +6,10 @@ import { createEvent } from "../database/addEventCommand";
 import { loadPlayers } from "../database/loadPlayersQuery";
 import { DateTimeField, Player, TennisEventModel } from "../models/model";
 import { useRouter } from "vue-router";
-const router = useRouter();
+import { calendar } from "./SmartCalendar";
 
-let options = ref<Player[]>();
+import PlayersComponent from "./PlayersComboBox.vue";
+const router = useRouter();
 
 interface TimePickerModel {
   hours: number;
@@ -16,85 +17,9 @@ interface TimePickerModel {
   seconds: number;
 }
 
-const loadTennisPlayers = async () => {
-  const options2 = await loadPlayers("");
-
-  options2.players.forEach((item) => {
-    item.color = item.level;
-    item.fullName = item.nickName + " - " + item.name;
-  });
-
-  options.value = options2.players;
-
-  console.log(options.value);
-};
-
-const AddTennisEvent = async () => {
-  if (selectedItems.value.length === 0) {
-    snackbar.value = true;
-    return;
-  }
-  getSelectedPlayers();
-  const timePicker = time.value as TimePickerModel;
-  0;
-  console.log(time.value);
-
-  const newEvent: TennisEventModel = {
-    day: selectedDate.value.getDate(),
-    month: selectedDate.value.getMonth() + 1,
-    year: selectedDate.value.getFullYear(),
-    conditions: conditii.value,
-    duration: durata.value,
-    light: lumina.value,
-    tennisField: field.value,
-    tennisTrainer: trainers.value,
-    guid: "empty",
-    players: getSelectedPlayers(),
-    startHour: { hour: timePicker.hours, minutes: timePicker.minutes },
-    endHour: { hour: timePicker.hours, minutes: timePicker.minutes },
-    warm: caldura.value,
-  };
-
-  await createEvent(newEvent);
-
-  router.push("/");
-};
-
-const getSelectedPlayers = () => {
-  const selectedPlayers: Player[] = [];
-
-  selectedItems.value.forEach((element) => {
-    console.log(element);
-    const player = options.value?.find((option) => option.id === element);
-    selectedPlayers.push(player!);
-  });
-
-  return selectedPlayers;
-};
-
-onMounted(() => {
-  loadTennisPlayers();
-});
-
-const items = ["foo", "bar", "fizz", "buzz"];
-const values = ["foo", "bar", "fizz", "buzz"];
-
-const selectedItems = ref([]);
-
-const level = (arg:any) => {
-  console.log(arg);
-  return "red";
-};
-
-const isCalendarOpen = ref(false); // Starea pentru deschiderea/închiderea calendarului
-const selectedDate = ref<Date>(new Date());
-
-onMounted(async () => {
-  selectedDate.value = new Date();
-  const dateJS = dayjs(selectedDate.value).format("DD/MM/YYYY");
-  console.log(dateJS);
-  selectedDate2.value = dateJS;
-});
+const snackbar = ref(false);
+const snackbarTitle = ref("");
+const snackbarDescription = ref("");
 
 //model
 const selectedDate2 = ref("");
@@ -104,7 +29,68 @@ const field = ref("1");
 const conditii = ref("aer liber");
 const lumina = ref("Nu");
 const caldura = ref("Nu");
-const trainers = ref("DaniM");
+const trainers = ref([]);
+const selectedPlayers = ref([]);
+
+const AddTennisEvent = async () => {
+  if (selectedPlayers.value.length === 0) {
+    snackbarTitle.value = "Alege jucatori";
+    snackbarDescription.value = "Pentru a putea adauga un antrenament trebuie selectat cel putin un jucator.";
+    snackbar.value = true;
+    return;
+  }
+
+  if (trainers.value.length === 0) {
+    snackbarTitle.value = "Alege antrenor";
+    snackbarDescription.value = "Pentru a putea adauga un antrenament trebuie selectat cel putin un antrenor.";
+    snackbar.value = true;
+    return;
+  }
+
+  const timePicker = time.value as TimePickerModel;
+
+  trainers.value.sort();
+  const trainersStr = JSON.stringify(trainers.value).replace("[", "").replace("]", "").replaceAll('"', "");
+
+  const timePickerEnd: Date = calendar.getEndHour(timePicker.hours, timePicker.minutes, parseInt(durata.value));
+
+  const newEvent: TennisEventModel = {
+    day: selectedDate.value.getDate(),
+    month: selectedDate.value.getMonth() + 1,
+    year: selectedDate.value.getFullYear(),
+    conditions: conditii.value,
+    duration: durata.value,
+    light: lumina.value,
+    tennisField: field.value,
+    tennisTrainer: trainersStr,
+    guid: "empty",
+    players: selectedPlayers.value,
+    startHour: { hour: timePicker.hours, minutes: timePicker.minutes },
+    endHour: { hour: timePickerEnd.getHours(), minutes: timePickerEnd.getMinutes() },
+    warm: caldura.value,
+  };
+
+  await createEvent(newEvent);
+
+  router.push("/");
+};
+const Cancel = async () => {
+  router.push("/feed");
+};
+
+const isCalendarOpen = ref(false); // Starea pentru deschiderea/închiderea calendarului
+const selectedDate = ref<Date>(new Date());
+
+onMounted(async () => {
+  const queryParams = new URLSearchParams(window.location.search);
+  const dateParam = queryParams.get("date") + "";
+  console.log("date din url: " + dateParam);
+  const dateUrl = calendar.getDateFromString(dateParam, "YYYY-MM-DD");
+  selectedDate.value = dateUrl;
+  const dateJS = dayjs(selectedDate.value).format("DD/MM/YYYY");
+  console.log(dateJS);
+  selectedDate2.value = dateJS;
+});
 
 const showCalendar = () => {
   isCalendarOpen.value = true; // Deschide calendarul când se apasă butonul
@@ -112,7 +98,6 @@ const showCalendar = () => {
 const close = () => {
   isCalendarOpen.value = false;
   const dates = selectedDate.value;
-  
 };
 const closeAndSet = (date: any) => {
   const dateJS = dayjs(date).format("DD/MM/YYYY");
@@ -135,21 +120,21 @@ const disabledTimes = [
   { hours: 18, minutes: 44 },
 ];
 
-const snackbar = ref(false);
+
 </script>
 
 <template>
   <div>
-  <v-snackbar v-model="snackbar" color="red" vertical>
-    <div class="text-subtitle-1 pb-2">Alege jucatori</div>
+    <v-snackbar v-model="snackbar" color="red" vertical>
+      <div class="text-subtitle-1 pb-2">{{ snackbarTitle }}</div>
 
-    <p>Pentru a putea adauga un antrenament trebuie selectat cel putin un jucator.</p>
+      <p>{{ snackbarDescription }}</p>
 
-    <template v-slot:actions>
-      <v-btn variant="outlined" @click="snackbar = false"> Close </v-btn>
-    </template>
-  </v-snackbar>
-</div>
+      <template v-slot:actions>
+        <v-btn variant="outlined" @click="snackbar = false"> Close </v-btn>
+      </template>
+    </v-snackbar>
+  </div>
   <v-container>
     <v-row><div style="height: 12px"></div></v-row>
     <v-row>
@@ -157,7 +142,7 @@ const snackbar = ref(false);
       <v-col>
         <div style="display: flex; justify-content: flex-end; align-items: center; height: 20px">
           <v-dialog v-model="isCalendarOpen" persistent>
-            <v-date-picker v-model="selectedDate" @input="selectedDate" @update:model-value="closeAndSet" @click:save="close"></v-date-picker>
+            <v-date-picker v-model="selectedDate" @input="selectedDate" @update:model-value="closeAndSet" min="2023-11-20" @click:save="close"></v-date-picker>
           </v-dialog>
           <!-- <div @click="showCalendar" style="border: 1px solid red; width: 120px;height: 30px;">{{ selectedDate2 }}</div> -->
           <!-- <v-btn @click="showCalendar" icon="mdi-calendar-range" elevation="0"></v-btn> -->
@@ -250,31 +235,11 @@ const snackbar = ref(false);
       </v-col>
     </v-row>
     <!-- color="blue-grey-lighten-2" -->
-    <v-row>
-      <v-col class="text-start align-self-center bold" style="font-weight: 700"></v-col>
-      <v-col class="text-end" style="display: flex; justify-content: flex-end">
-        <v-card color="deep-purple-accent-2" max-width="450" width="390">
-          <!-- <v-select -->
-          <v-autocomplete
-            color="deep-purple-accent-2"
-            v-model="selectedItems"
-            :items="options"
-            label="Alege jucatori"
-            label-color="red"
-            item-value="id"
-            item-color="red"
-            item-title="nick"
-            multiple
-            chips
-            closable-chips
-          />
-        </v-card>
-      </v-col>
-    </v-row>
+
     <v-row>
       <v-col class="text-start align-self-center" style="font-weight: 700">Antrenori</v-col>
       <v-col class="text-end">
-        <v-btn-toggle v-model="trainers" color="deep-purple-accent-2">
+        <v-btn-toggle v-model="trainers" multiple color="deep-purple-accent-2">
           <v-btn value="Alice" style="text-transform: capitalize !important">Alice</v-btn>
           <v-btn value="Alina" style="text-transform: capitalize !important">Alina</v-btn>
           <v-btn value="DaniM" style="text-transform: capitalize !important">Dani</v-btn>
@@ -283,12 +248,17 @@ const snackbar = ref(false);
       </v-col>
     </v-row>
 
-    <v-row><v-divider></v-divider></v-row>
-    <v-row><div style="height: 15px"></div></v-row>
+    <v-row>
+      <v-col class="text-end" style="display: flex; justify-content: flex-end">
+        <PlayersComponent v-model:modelValue2="selectedPlayers" />
+      </v-col>
+    </v-row>
+
+    <v-row><div style="height: 10px"></div></v-row>
 
     <v-row>
       <div style="display: flex; justify-content: flex-end; align-items: flex-end; width: 100%">
-        <v-btn class="text-none" color="grey-lighten-3" variant="flat"> Renunta </v-btn>
+        <v-btn class="text-none" color="grey-lighten-3" variant="flat" @click="Cancel"> Renunta </v-btn>
 
         <div style="width: 15px"></div>
 

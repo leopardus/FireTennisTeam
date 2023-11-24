@@ -10,7 +10,6 @@ const props = defineProps({
   },
 });
 
-console.log("123123");
 const players = JSON.parse(props.msg?.players);
 const numeList = players.map((item:any) => item.name);
 const jucatori = numeList.join(", ");
@@ -55,8 +54,7 @@ const a1 = props.msg?.guid;
         <!-- <p><b>Terenul:</b> {{ msg?.tennisField }}</p> -->
         <p style="text-align: start"><b>Players: </b>{{ jucatori }}</p>
 
-        <p><b>Conditii</b></p>
-        <p>[in work] Aero liber, cu lumina, fara caldura</p>
+        <p><b>Conditii</b> {{ msg?.conditions }} &nbsp;  <b>Lumina</b> {{ msg?.light }} &nbsp; <b>Caldura</b> {{ msg?.warm }}</p>
       </div>
 
       <div class="right">

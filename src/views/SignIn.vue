@@ -16,6 +16,8 @@ const signIn = () => {
       console.log("Successfully logged in!");
       const store = useCounterStore();
       store.userLogged();
+      const value = auth.currentUser.email.substr(0, auth.currentUser.email.indexOf("@"));
+      store.userLoggedName(value);
       router.push("/feed"); // redirect to the feed
     })
     .catch((error) => {
@@ -25,7 +27,7 @@ const signIn = () => {
 };
 </script>
 <template>
-  <h1>FireTennis Team</h1>
+  <h1>FireTennis</h1>
   <br/>
   <p><input class="input" type="text" placeholder="Email" v-model="email" /></p>
   <p><input class="input" type="password" placeholder="Password" v-model="password" /></p>

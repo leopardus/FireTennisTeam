@@ -23,8 +23,8 @@ export const createEvent = async (arg: TennisEventModel) => {
   };
 
   
-  const firebaseDoc = doc(db, "/tennis-events/" + arg.year + "-" + arg.month + "-" + arg.day + "/dailyEvents/" + guid);
-  //const firebaseDoc = doc(db, "/events/" + arg.year + "-" + arg.month + "-" + arg.day + "/dailyEvents/" + guid);
+  //const firebaseDoc = doc(db, "/tennis-events/" + arg.year + "-" + arg.month + "-" + arg.day + "/dailyEvents/" + guid);
+  const firebaseDoc = doc(db, "/events/"        + arg.year + "-" + arg.month + "-" + arg.day + "/dailyEvents/" + guid);
   
   await setDoc(firebaseDoc, dataObj);
 

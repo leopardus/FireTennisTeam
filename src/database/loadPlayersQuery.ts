@@ -14,6 +14,8 @@ export const loadPlayers = async (arg: any) => {
     players.push(player);
   });
 
+  players.sort((a, b) => a.name.localeCompare(b.name))
+
   console.log("loaded no of players:" + players.length);
   return { players };
 };

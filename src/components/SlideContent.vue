@@ -1,84 +1,86 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import { loadEvents } from "../database/loadEventsQuery";
-
-import { calendar } from "./SmartCalendar";
 import { TennisEventModel } from "../models/model";
-
 import TennisEvent from "./TennisEvent.vue";
+import { useCounterStore } from "../app/store";
 
 const props = defineProps({
   date: String,
 });
 
 const items = ref<TennisEventModel[]>([]);
+const store = useCounterStore();
+let info = ref("loading..");
 
-const loadEventsInner = async () => {
-  try {
-    const dateIeri = calendar.getDateAfterXNumberOfDays(-1);
-
-    const response = await loadEvents(props.date);
-    items.value = response.events;
-  } catch (error: any) {
-    console.error(error.message);
+const getEvents = async () => {
+  if (store.isUserLogged2) {
+    try {
+      const response = await loadEvents(props.date, store.getUserName);
+      items.value = response.events;
+    } catch (error: any) {
+      console.error(error.message);
+    }
+    info.value = items.value.length + "";
+  } else {
+    console.error("the user is not yet logged.");
   }
 };
+
 onMounted(async () => {
-  await loadEventsInner();
+  getEvents();
 });
 
-watch(items, (newItems) => {
-  console.log("Items have changed:", newItems);
+watch(store.$state, (newStore) => {
+  getEvents();
 });
 
-const handleItemUpdated = async(updatedItem:any) => {
-  await loadEventsInner();
+const handleItemUpdated = async (updatedItem: any) => {
+  await getEvents();
 };
 </script>
 
 <template>
-  <div class="main" style="height: 100px; padding-top: 20px">
-    <div
-      class="header"
-      style="background-color: #ffffff; padding: 9px 9px 9px 9px; border-radius: 5px 5px 5px 5px; border: 1px solid #464646; max-width: 400px; width: 90%"
-    >
-      <div>Antrenamente Dani {{}}</div>
-      <!-- <div><h2>Dani Mitranca</h2></div> -->
-      <div>
-        <h5>Data: {{ date }}</h5>
+  <div style="min-height: 530px">
+    <div class="main" style="height: 100px; padding-top: 10px">
+      <div
+        class="header"
+        style="background-color: #ffffff; padding: 9px 9px 9px 9px; border-radius: 5px 5px 5px 5px; border: 1px solid #464646; max-width: 400px; width: 90%"
+      >
+        <div style="display: flex; flex-direction: row; justify-content: space-between; width: 100%">
+          <div>
+            <div class="text-left">Antrenamente</div>
+            <div class="text-left">
+              <h5>Data: {{ date }}</h5>
+            </div>
+            <div class="text-left">
+              <h5>Total : {{ info }}</h5>
+            </div>
+          </div>
+          <div>
+            <!-- <v-btn @click="addTennisEvent" color="#ffffff" icon="mdi-sticker-plus-outline" elevation="0" style="padding: 1px"> </v-btn> -->
+          </div>
+        </div>
       </div>
-      <div>
-        <h5>Total : {{ items.length }}</h5>
+      <div></div>
+    </div>
+    <div v-for="item in items" :key="item.guid">
+      <div class="main">
+        <TennisEvent :msg="item" @item-updated="handleItemUpdated" />
       </div>
     </div>
+    <div style="height: 35px"></div>
   </div>
-  <div v-for="item in items" :key="item.guid">
-    <!-- <div v-for="item in items"> -->
-    <div class="main">
-      <TennisEvent :msg="item" @item-updated="handleItemUpdated" />
-    </div>
-  </div>
-
-  <div v-if="items.length === 0" class="main">
-    <h1>Zi fara antrenamente</h1>
-  </div>
-  <div style="height: 35px"></div>
 </template>
 
-<style scoped>
+<style>
 .main {
-  /*
-  background-color: aquamarine;
-  */
   align-items: center;
   display: flex;
   justify-content: start;
   flex-direction: column;
 }
 .header {
-  /*
-  background-color: aquamarine;
-  */
   align-items: self-start;
   display: flex;
   justify-content: start;
@@ -91,5 +93,8 @@ const handleItemUpdated = async(updatedItem:any) => {
   background-color: #f8f8f8;
   border-radius: 5px 5px 5px 5px;
   border: 1px solid #e9e9e9;
+}
+i.v-icon.v-icon {
+  color: rgb(161, 161, 161);
 }
 </style>

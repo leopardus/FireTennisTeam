@@ -1,4 +1,4 @@
-export interface TennisEventModel {
+export type TennisEventModel = {
   guid: string;
   players: Player[];
   year: number;
@@ -30,7 +30,7 @@ export interface Player {
     mainTrainer:string;
 
     name:string;
-    nickName:string;
+    nick:string;
     payField:boolean;
     payTrainer:boolean;
     tests:boolean;

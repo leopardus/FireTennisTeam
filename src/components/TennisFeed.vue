@@ -3,6 +3,8 @@ import { onMounted, ref, watch } from "vue";
 // Import Swiper Vue.js components
 import { Swiper, SwiperSlide } from "swiper/vue";
 
+import { calendar } from "./SmartCalendar";
+
 // Import Swiper styles
 import "swiper/css";
 import { Pagination, Navigation, Virtual } from "swiper/modules";
@@ -11,42 +13,35 @@ import "swiper/css/navigation";
 import "swiper/css/virtual";
 import type SwiperClass from "swiper";
 import SlideContent from "./SlideContent.vue";
-
-import { calendar } from "./SmartCalendar";
+import { useCounterStore } from "../app/store";
+import { useRouter } from "vue-router";
 
 interface ISliderItem {
   key: string;
   index?: number;
 }
 
+const store = useCounterStore();
+const router = useRouter();
+
+let today = ref(calendar.getDayNameDayNumberMonthEx(new Date()));
+
 let modules = [Pagination, Navigation, Virtual];
 let swiperRef: SwiperClass | null = null;
+
+const addTennisEvent = async (updatedItem: any) => {
+  store.setCurrentDate(swiperRef?.activeIndex! + 1 + "");
+  router.push("/new?date=" + slides[swiperRef?.activeIndex!].key);
+};
+
 const onSwiper = (swiper: any) => {
   console.log(swiper);
   swiperRef = swiper;
 };
 const onSlideChange = () => {
   console.log("slide change: " + swiperRef?.activeIndex);
-};
-
-const onPrevSlideChange = () => {
-  if (swiperRef?.activeIndex! === 0) {
-    const keyDate = slides[swiperRef?.activeIndex!].key;
-
-    const prevDate = calendar.getDateAfterXNumberOfDays(-1, calendar.getDateFromString(keyDate, "YYYY-MM-DD"));
-    console.log("lungimeX" + slides.length);
-    // slides.unshift({ key: prevDate });
-    // console.log("lungimeXX" + slides.length);
-    // swiperRef?.slideTo(swiperRef.activeIndex + 1, 500)
-  }
-};
-
-const onNextSlideChange = () => {
-  if (slides.length === swiperRef?.activeIndex! + 1) {
-    const keyDate = slides[swiperRef?.activeIndex!].key;
-    const nextDate = calendar.getDateAfterXNumberOfDays(1, calendar.getDateFromString(keyDate, "YYYY-MM-DD"));
-    //slides.push({ key: nextDate });
-  }
+  today.value = calendar.getDayNameDayNumberMonth(slides[swiperRef?.activeIndex!].key);
+  console.log(today.value);
 };
 
 const generateScrollDays = () => {
@@ -62,53 +57,39 @@ const slides: ISliderItem[] = [];
 generateScrollDays();
 
 onMounted(() => {
-  slideTo(31);
-});
+  const currentDate = store.getCurrentDate;
 
-//const slides = Array.from({ length: 10 }).map((_, index) => index + 1);
+  if (parseInt(currentDate)) {
+    console.log("try mount:" + currentDate);
+    slideTo(parseInt(currentDate));
+  } else {
+    slideTo(31);
+  }
+  console.log("mounted");
+});
 
 const slideTo = (index: number) => {
   console.log("slide to: " + index);
-
   swiperRef?.slideTo(index - 1, 300);
 };
-
-const slideToPrev = () => {
-  const prev = swiperRef?.activeIndex! - 1;
-  console.log("slide to prev: " + prev);
-
-  swiperRef?.slideTo(prev, 300);
-};
-const slideToNext = () => {
-  const next = swiperRef?.activeIndex! + 1;
-  console.log("slide to prev: " + next);
-
-  swiperRef?.slideTo(next, 300);
-};
-const append = () => {
-  //slides.push(slides.length);
-};
-
-const items = ["foo", "bar", "fizz", "buzz"];
-const values = ["foo", "bar", "fizz", "buzz"];
-
-const selectedItems = ref([]);
-
-const options = ref([
-  { label: "Option 1", value: "option1" },
-  { label: "Option 2", value: "option2" },
-  { label: "Option 3", value: "option3" },
-]);
 </script>
 
 <template>
-  <div class="toolbar">
-    <v-btn :elevation="0" class="buttonNav" @click="slideToPrev()"> &lt;&lt; </v-btn>
-    <v-btn :elevation="0" class="buttonNav" @click="slideTo(30)">Ieri </v-btn>
-    <v-btn :elevation="0" class="buttonNav" @click="slideTo(31)"><div style="width: 20px !important">Azi</div></v-btn>
-    <v-btn :elevation="0" class="buttonNav" @click="slideTo(32)"> Maine </v-btn>
-    <v-btn :elevation="0" class="buttonNav" @click="slideToNext()"> >> </v-btn>
+  <div class="toolbar" style="margin-top: 15px; height: 20px">
+    <!-- <v-btn :elevation="0" class="buttonNav" @click="slideToPrev()"> &lt;&lt; </v-btn>
+    
+    <v-btn :elevation="0" variant="flat" class="buttonNav" @click="slideTo(31)"><div style="border: solid 0px red;  
+    text-transform: capitalize; width: 230px !important">{{today}}</div></v-btn> -->
+
+    <span style="border: solid 0px red; text-transform: capitalize; width: 230px !important">{{ today }}</span>
+    <!-- <v-btn :elevation="0" class="buttonNav" @click="slideToNext()"> >> </v-btn> -->
   </div>
+  <VLayoutItem model-value position="bottom" class="text-end" size="100">
+    <div class="ma-4">
+      <VBtn icon="mdi-plus" @click="addTennisEvent" size="large" color="black" elevation="8" />
+    </div>
+  </VLayoutItem>
+
   <swiper
     class="swiper"
     :slides-per-view="1"
@@ -116,14 +97,12 @@ const options = ref([
     :space-between="50"
     @swiper="onSwiper"
     @slideChange="onSlideChange"
-    @slide-prev-transition-start="onPrevSlideChange"
-    @slide-next-transition-start="onNextSlideChange"
     :virtual="true"
     :navigation="false"
     :pagination="{ type: 'fraction' }"
   >
     <swiper-slide v-for="(slideContent, index) in slides" :key="index" :virtual-index="index" class="slide">
-      <SlideContent :date="slideContent.key"/>
+      <SlideContent :date="slideContent.key" />
     </swiper-slide>
   </swiper>
 </template>

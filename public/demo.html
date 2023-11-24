@@ -1,0 +1,82 @@
+<style>
+
+  .main {
+    
+    padding: 10;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
+  
+  .items {
+    
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+    white-space: nowrap;
+    
+    cursor: pointer;
+  }
+
+  .items.active {
+    background: rgba(255,255,255,0.3);
+    cursor: grabbing;
+    cursor: -webkit-grabbing;
+  }
+
+  .item {
+    display: inline-block;
+    background: skyblue;
+    min-height: 250px;
+    min-width: 400px;
+    margin: 2em 1em;
+  
+  }
+}
+</style>
+<body>
+<main class="main">
+    <div class="items">
+      <div class="item">21</div>
+      <div class="item item12">2</div>
+      <div class="item item23">13</div>
+      <div class="item item34">4</div>
+      <div class="item item5">5</div>
+      <div class="item item6">11</div>
+      <div class="item item7">22</div>
+      <div class="item item8">11</div>
+      <div class="item item9">22</div>
+      <div class="item item10">33</div>
+    </div>
+    <p>🐰🥚Click & Drag <i>powered by Javascript</i></p>
+  </main>
+  
+</body>  
+  <script>
+const slider = document.querySelector('.items');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+slider.addEventListener('mousedown', (e) => {
+  isDown = true;
+  slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+});
+slider.addEventListener('mouseleave', () => {
+  isDown = false;
+  slider.classList.remove('active');
+});
+slider.addEventListener('mouseup', () => {
+  isDown = false;
+  slider.classList.remove('active');
+});
+slider.addEventListener('mousemove', (e) => {
+  if(!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX) * 3; //scroll-fast
+  slider.scrollLeft = scrollLeft - walk;
+  console.log(walk);
+});
+</script>

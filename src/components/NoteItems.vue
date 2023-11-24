@@ -130,7 +130,7 @@ header button {
   padding: 10px 20px;
   font-size: 20px;
   width: 100%;
-  background-color: blueviolet;
+  background-color: rgb(122, 104, 138);
   color: aliceblue;
   border: none;
   cursor: pointer;

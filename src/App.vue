@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect } from "vue"; // used for conditional rendering
+import { onMounted, ref, watchEffect } from "vue"; // used for conditional rendering
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 import { useCounterStore } from "./app/store";
 import { useRouter } from "vue-router";
@@ -11,12 +11,15 @@ const isLoggedIn = ref(true);
 // runs after firebase is initialized
 const auth = getAuth();
 auth.onAuthStateChanged(function (user) {
+  console.log("changed auth user state: " + auth.currentUser.email);
   if (user) {
-    console.log("user loggedin");
+    console.log("user logged in");
     store.userLogged();
     isLoggedIn.value = true; // if we have a user
+    userEmail.value = auth.currentUser.email.substr(0, auth.currentUser.email.indexOf("@"));
+    store.userLoggedName(userEmail.value);
   } else {
-    console.log("user loggedoff");
+    console.log("user logged off");
     store.userLoggedOff();
     isLoggedIn.value = false; // if we do not
   }
@@ -28,16 +31,23 @@ const signOut = () => {
 
 const drawer = ref(false);
 const menuItems = [
-  { text: "Antrenamente", icon: "mdi-home" , link:"/feed"},
-  { text: "Adaugare", icon: "mdi-package-variant", link:"/new" },
-  { text: "Statistica", icon: "mdi-email" , link:"/statistica"},
-  { text: "Logare", icon: "mdi-email" , link:"/signin"},
+  { text: "Antrenamente", icon: "mdi-home", link: "/feed" },
+  { text: "Adaugare", icon: "mdi-package-variant", link: "/new" },
+  { text: "Statistica", icon: "mdi-email", link: "/statistica" },
+  { text: "Logare", icon: "mdi-email", link: "/signin" },
 ];
 
-const navigateTo = (route) =>{
-      router.push(route);
-      //this.drawer = false; // Închide drawer-ul după selectarea unui link
-    }
+const navigateTo = (route) => {
+  router.push(route);
+  //this.drawer = false; // Închide drawer-ul după selectarea unui link
+};
+
+let userEmail = ref("...");
+
+onMounted(() => {
+  console.log(auth);
+  //console.log("email" + auth.currentUser.email);
+});
 </script>
 
 <template>
@@ -62,8 +72,8 @@ const navigateTo = (route) =>{
               <v-icon name="oi-square" />
             </v-list-item-icon>
             <v-list-item-content>
-            <v-list-item-title>{{ item.text }}</v-list-item-title>
-          </v-list-item-content>
+              <v-list-item-title>{{ item.text }}</v-list-item-title>
+            </v-list-item-content>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -73,18 +83,21 @@ const navigateTo = (route) =>{
       <v-btn icon>
         <v-icon name="oi-three-bars" @click="drawer = !drawer" style="font-size: 20px" />
       </v-btn>
-      <v-app-bar-title class="d-flex self-start"> FIRE Tennis Team</v-app-bar-title>
+      <v-app-bar-title class="d-flex self-start">Fire Tennis</v-app-bar-title>
 
       <!-- <v-spacer style="width: 2px;"></v-spacer> -->
       <v-btn icon>
         <v-icon name="bi-calendar2-week" class="icon2" fill="white" scale="1" />
       </v-btn>
-      <v-btn icon>
+      <v-btn style="text-transform: capitalize !important">{{ userEmail }}</v-btn>
+      <!-- <v-btn >
+        ALICE
         <v-icon name="pr-user" class="icon2" fill="white" scale="1" />
-      </v-btn>
+      </v-btn> -->
     </v-app-bar>
-
-    <router-view />
+    <div>
+      <router-view />
+    </div>
   </v-app>
 </template>
 
