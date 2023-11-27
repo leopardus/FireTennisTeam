@@ -48,3 +48,9 @@ export interface PricePlan{
     lumina: number;
     caldura: number;
 }
+
+export interface TimePickerModel {
+  hours: number;
+  minutes: number;
+  seconds: number;
+}

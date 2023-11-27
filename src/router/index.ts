@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-import SignIn from "../views/SignIn.vue";
+import Login from "../pages/Login.vue";
 import TennisFeed from "../components/TennisFeed.vue";
-import NewEvent from "../components/NewEvent.vue";
-import InProgress from "../components/InProgress.vue";
+import AddTraining from "../pages/AddTraining.vue";
+import InProgress from "../pages/InProgress.vue";
+import Note from "../components/NoteItems.vue"
 import { getAuth } from "firebase/auth";
 import { useCounterStore } from "../app/store";
 
@@ -12,8 +13,9 @@ export const router = createRouter({
 
   routes: [
     { path: "/", component: TennisFeed },
-    { path: "/signin", component: SignIn },
-    { path: "/new", component: NewEvent },
+    { path: "/login", component: Login },
+    { path: "/add", component: AddTraining },
+    { path: "/note", component: Note },
     { path: "/statistica", component: InProgress },
     // { path: "/register", component: Register },
     { path: "/feed", component: TennisFeed, meta: { requiresAuth: true } },
@@ -32,7 +34,7 @@ router.beforeEach((to, from, next) => {
       console.log("authenticated route");
     } else {
       console.log("authenticated route required");
-      next("/signin");
+      next("/login");
     }
   } else {
     next();

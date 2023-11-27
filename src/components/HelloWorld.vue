@@ -20,7 +20,7 @@ const register = () => {
     });
 };
 
-const getItems = async (xx) => {
+const getItems = async (xx :any) => {
   const db = getFirestore();
 
   const docSnap = await getDoc(doc(db, "settings", "summer2020"));

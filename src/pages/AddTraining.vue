@@ -1,32 +1,24 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
-// Import Swiper Vue.js components
-import dayjs, { Dayjs } from "dayjs";
+import { ref } from "vue";
 import { createEvent } from "../database/addEventCommand";
-import { loadPlayers } from "../database/loadPlayersQuery";
-import { DateTimeField, Player, TennisEventModel } from "../models/model";
+import { TennisEventModel, TimePickerModel } from "../models/model";
 import { useRouter } from "vue-router";
-import { calendar } from "./SmartCalendar";
-
-import PlayersComponent from "./PlayersComboBox.vue";
+import { calendar } from "../components/SmartCalendar";
+import PlayersComponent from "../components/PlayersComboBox.vue";
+import TimePicker from "../components/TimePickerTextBox.vue";
+import DateTimePicker from "../components/DateTimePickerField.vue";
 const router = useRouter();
-
-interface TimePickerModel {
-  hours: number;
-  minutes: number;
-  seconds: number;
-}
 
 const snackbar = ref(false);
 const snackbarTitle = ref("");
 const snackbarDescription = ref("");
 
 //model
-const selectedDate2 = ref("");
-const time = ref<TimePickerModel>({ hours: new Date().getHours(), minutes: 0, seconds: 0 });
-const durata = ref("60");
+const selectedDate3 = ref<Date>(new Date());
+const startTime = ref<TimePickerModel>({ hours: new Date().getHours(), minutes: 0, seconds: 0 });
+const duration = ref("60");
 const field = ref("1");
-const conditii = ref("aer liber");
+const conditions = ref("aer liber");
 const lumina = ref("Nu");
 const caldura = ref("Nu");
 const trainers = ref([]);
@@ -47,19 +39,19 @@ const AddTennisEvent = async () => {
     return;
   }
 
-  const timePicker = time.value as TimePickerModel;
+  const timePicker = startTime.value as TimePickerModel;
 
   trainers.value.sort();
   const trainersStr = JSON.stringify(trainers.value).replace("[", "").replace("]", "").replaceAll('"', "");
 
-  const timePickerEnd: Date = calendar.getEndHour(timePicker.hours, timePicker.minutes, parseInt(durata.value));
+  const timePickerEnd: Date = calendar.getEndHour(timePicker.hours, timePicker.minutes, parseInt(duration.value));
 
   const newEvent: TennisEventModel = {
-    day: selectedDate.value.getDate(),
-    month: selectedDate.value.getMonth() + 1,
-    year: selectedDate.value.getFullYear(),
-    conditions: conditii.value,
-    duration: durata.value,
+    day: selectedDate3.value.getDate(),
+    month: selectedDate3.value.getMonth() + 1,
+    year: selectedDate3.value.getFullYear(),
+    conditions: conditions.value,
+    duration: duration.value,
     light: lumina.value,
     tennisField: field.value,
     tennisTrainer: trainersStr,
@@ -74,52 +66,10 @@ const AddTennisEvent = async () => {
 
   router.push("/");
 };
+
 const Cancel = async () => {
   router.push("/feed");
 };
-
-const isCalendarOpen = ref(false); // Starea pentru deschiderea/închiderea calendarului
-const selectedDate = ref<Date>(new Date());
-
-onMounted(async () => {
-  const queryParams = new URLSearchParams(window.location.search);
-  const dateParam = queryParams.get("date") + "";
-  console.log("date din url: " + dateParam);
-  const dateUrl = calendar.getDateFromString(dateParam, "YYYY-MM-DD");
-  selectedDate.value = dateUrl;
-  const dateJS = dayjs(selectedDate.value).format("DD/MM/YYYY");
-  console.log(dateJS);
-  selectedDate2.value = dateJS;
-});
-
-const showCalendar = () => {
-  isCalendarOpen.value = true; // Deschide calendarul când se apasă butonul
-};
-const close = () => {
-  isCalendarOpen.value = false;
-  const dates = selectedDate.value;
-};
-const closeAndSet = (date: any) => {
-  const dateJS = dayjs(date).format("DD/MM/YYYY");
-  console.log(dateJS);
-  selectedDate2.value = dateJS;
-  isCalendarOpen.value = false;
-};
-
-const toggle = ref();
-const disabledTimes = [
-  { hours: 4, minutes: 15 },
-  { hours: 4, minutes: 11 },
-  { hours: 4, minutes: 12 },
-  { hours: 4, minutes: 13 },
-  { hours: 16, minutes: 20 },
-  { hours: 18, minutes: 40 },
-  { hours: 18, minutes: 41 },
-  { hours: 18, minutes: 42 },
-  { hours: 18, minutes: 43 },
-  { hours: 18, minutes: 44 },
-];
-
 
 </script>
 
@@ -140,33 +90,14 @@ const disabledTimes = [
     <v-row>
       <v-col class="text-start align-self-center font-weight-bold">Data</v-col>
       <v-col>
-        <div style="display: flex; justify-content: flex-end; align-items: center; height: 20px">
-          <v-dialog v-model="isCalendarOpen" persistent>
-            <v-date-picker v-model="selectedDate" @input="selectedDate" @update:model-value="closeAndSet" min="2023-11-20" @click:save="close"></v-date-picker>
-          </v-dialog>
-          <!-- <div @click="showCalendar" style="border: 1px solid red; width: 120px;height: 30px;">{{ selectedDate2 }}</div> -->
-          <!-- <v-btn @click="showCalendar" icon="mdi-calendar-range" elevation="0"></v-btn> -->
-          <v-text-field
-            append-inner-icon="mdi-calendar-range"
-            style="padding-left: 10px !important"
-            color="blue"
-            class="custom-text-field"
-            @click="showCalendar"
-            v-model="selectedDate2"
-            label=""
-            variant="outlined"
-            readonly
-          />
-        </div>
+        <DateTimePicker v-model:custom-date="selectedDate3" />
       </v-col>
     </v-row>
 
     <v-row>
       <v-col class="text-start align-self-center font-weight-bold">Ora de start</v-col>
       <v-col>
-        <div class="d-flex flex-column align-center">
-          <VueDatePicker v-model="time" minutes-increment="30" time-picker :disabled-times="disabledTimes" placeholder="Select Time" />
-        </div>
+        <TimePicker v-model:custom-time="startTime" />
       </v-col>
     </v-row>
 
@@ -174,7 +105,7 @@ const disabledTimes = [
       <v-col class="text-start align-self-center font-weight-bold">Durata </v-col>
       <v-col class="text-end">
         <!-- <div class="d-flex flex-column align-center"> -->
-        <v-btn-toggle v-model="durata" color="deep-purple-accent-2">
+        <v-btn-toggle v-model="duration" color="deep-purple-accent-2">
           <v-btn value="30">30</v-btn>
           <v-btn value="60">60</v-btn>
           <v-btn value="90">90</v-btn>
@@ -202,7 +133,7 @@ const disabledTimes = [
     <v-row>
       <v-col class="text-start align-self-center font-weight-bold">Conditii joc</v-col>
       <v-col>
-        <v-btn-toggle v-model="conditii" color="deep-purple-accent-3">
+        <v-btn-toggle v-model="conditions" color="deep-purple-accent-3">
           <v-btn value="in balon" style="text-transform: capitalize !important">In Balon</v-btn>
           <v-btn value="aer liber" style="text-transform: capitalize !important">Aer Liber</v-btn>
         </v-btn-toggle>

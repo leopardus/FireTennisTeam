@@ -32,9 +32,9 @@ const signOut = () => {
 const drawer = ref(false);
 const menuItems = [
   { text: "Antrenamente", icon: "mdi-home", link: "/feed" },
-  { text: "Adaugare", icon: "mdi-package-variant", link: "/new" },
+  { text: "Adaugare", icon: "mdi-package-variant", link: "/add" },
   { text: "Statistica", icon: "mdi-email", link: "/statistica" },
-  { text: "Logare", icon: "mdi-email", link: "/signin" },
+  { text: "Logare", icon: "mdi-email", link: "/login" },
 ];
 
 const navigateTo = (route) => {

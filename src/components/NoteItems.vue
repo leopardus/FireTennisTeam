@@ -11,7 +11,33 @@ function buttonClick() {
 const store = useCounterStore();
 
 const newNote = ref("");
-const notes = ref([]);
+const notes = ref([
+{
+  text: "newNote.value",
+    date: new Date(),
+    color: getRandomColor()
+},
+{
+  text: "newNote.value",
+    date: new Date(),
+    color: getRandomColor()
+},
+{
+  text: "newNote.value",
+    date: new Date(),
+    color: getRandomColor()
+},
+{
+  text: "newNote.value",
+    date: new Date(),
+    color: getRandomColor()
+},
+{
+  text: "newNote.value",
+    date: new Date(),
+    color: getRandomColor()
+}
+]);
 
 function getRandomColor() {
   const color = "hsl(" + Math.random() * 360 + ", 100%, 75%)";
@@ -32,7 +58,7 @@ const addNote = () => {
 
 <template>
   <main>
-    <div v-if="store.showModal" class="overlay">
+    <div v-if="false" class="overlay">
       <div class="modal">
         <textarea v-model="newNote" name="note" id="note" cols="30" rows="10"></textarea>
         <button @click="addNote">Add Note</button>
